@@ -33,3 +33,10 @@
   font-size: 25px;
   background-color: #00ffb3;
 }
+
+.todos {
+  display: flex;
+  justify-content: space-evenly;
+  width: 90%;
+  flex-wrap: wrap;
+}
