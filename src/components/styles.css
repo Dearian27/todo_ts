@@ -74,6 +74,20 @@
   padding: 5px;
 }
 
+.todos__single--input {
+  /* color: rgb(255, 215, 84); */
+  flex: 1;
+  border: none;
+  font-size: 25px;
+  padding: 5px;
+  border-bottom: 4px solid #afafaf;
+  text-align: center;
+  font-family: 'Neucha', cursive;
+}
+.todos__single--input:focus {
+  outline: none;
+}
+
 .todos__single--text:focus {
   outline: none;
 }

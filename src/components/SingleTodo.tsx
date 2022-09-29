@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
-import {Todo} from '../model'
-import {AiOutlineEdit} from 'react-icons/ai'
-import {MdOutlineDeleteOutline, MdDone} from 'react-icons/md'
+import React, { useState, useRef, useEffect } from 'react'
+import { Todo } from '../model'
+import { AiOutlineEdit } from 'react-icons/ai'
+import { MdOutlineDeleteOutline, MdDone } from 'react-icons/md'
 
 type Props = {
   todo: Todo;
@@ -9,58 +9,68 @@ type Props = {
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 }
 
-const SingleTodo:React.FC<Props> = ({todo, todos, setTodos}) => {
-  
+const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
+
   const [edit, setEdit] = useState<boolean>(false)
   const [editTodo, setEditTodo] = useState<string>(todo.todo)
 
-  const handleDelete = (id:number) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [edit])
+
+  const handleDelete = (id: number) => {
     setTodos(
-      todos.filter(todo => todo.id!== id)
+      todos.filter(todo => todo.id !== id)
     )
   }
 
-  const handleDone = (id:number) => {
+  const handleDone = (id: number) => {
     setTodos(
       todos.map(todo =>
-          todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
+        todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
       )
     )
   }
-  const handleEdit = () => {
-
+  const handleEdit = (el: React.FormEvent, id: number) => {
+    el.preventDefault()
+    setTodos(todos.map(todo => (
+      todo.id === id ? { ...todo, todo: editTodo } : todo
+    )))
+    setEdit(false)
   }
-  return(
-    <form className='todos__single'>
+
+  return (
+    <form className='todos__single' onSubmit={e => handleEdit(e, todo.id)}>
       {
         edit ? (
           <input type="text"
-          value={editTodo}
-          onChange={(e) => setEditTodo(e.target.value)}
-          className='todos__single--test'
+            value={editTodo} ref={inputRef}
+            onChange={(e) => setEditTodo(e.target.value)}
+            className='todos__single--input'
           />
-        ): todo.isDone ? (
+        ) : todo.isDone ? (
           <s className='todos__single--text'> {todo.todo} </s>
-        ): (
+        ) : (
           <span className='todos__single--text'> {todo.todo} </span>
         )
       }
-      
+
       <div>
         <span className='icon'>
-          <AiOutlineEdit onClick={() => {
-            if(!edit && !todo.isDone) {
+          <AiOutlineEdit onClick={(el) => {
+            if (!edit && !todo.isDone) {
               setEdit(!edit)
-              handleEdit()
             }
-            
-            }}/>
+
+          }} />
         </span>
         <span className='icon' onClick={() => handleDelete(todo.id)}>
-          <MdOutlineDeleteOutline/>
+          <MdOutlineDeleteOutline />
         </span>
         <span className='icon' onClick={() => handleDone(todo.id)}>
-          <MdDone/>
+          <MdDone />
         </span>
       </div>
     </form>
